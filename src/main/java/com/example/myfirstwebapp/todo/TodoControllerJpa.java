@@ -15,16 +15,20 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import java.time.LocalDate;
 import java.util.List;
 
-//@Controller
+@Controller
 @SessionAttributes("name")
-public class TodoController {
+public class TodoControllerJpa {
+
+//    @Autowired
+//    private TodoService todoService;
+
     @Autowired
-    private TodoService todoService;
+    private TodoRepository repository;
 
     @RequestMapping("list-todos")
     public String listAllTodos(ModelMap model) {
         String username = getLoggedinUsername();
-        List<Todo> todos = todoService.findByUsername(username);
+        List<Todo> todos = repository.findByUsername(username);
         model.addAttribute("todos", todos);
         return "listTodos";
     }
@@ -43,19 +47,27 @@ public class TodoController {
             return "todo";
         }
         String username = getLoggedinUsername();
-        todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
+        todo.setUsername(username);
+
+        // New way
+        repository.save(todo);
+
+        // Old way
+//        todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), false);
         return "redirect:list-todos";
     }
 
     @RequestMapping(value="delete-todo")
     public String deleteTodo(@RequestParam int id) {
-        todoService.removeTodo(id);
+        repository.deleteById(id);
+//        todoService.removeTodo(id);
         return "redirect:list-todos";
     }
 
     @RequestMapping(value="update-todo", method = RequestMethod.GET)
     public String showUpdateTodoPage(@RequestParam int id, ModelMap model) {
-        Todo todo = todoService.findById(id);
+        Todo todo = repository.findById(id).get();
+//        Todo todo = todoService.findById(id);
         model.addAttribute("todo", todo);
         return "todo";
     }
@@ -67,7 +79,8 @@ public class TodoController {
         }
         String username = getLoggedinUsername();
         todo.setUsername(username);
-        todoService.updateTodo(todo);
+        repository.save(todo);
+//        todoService.updateTodo(todo);
         return "redirect:list-todos";
     }
 

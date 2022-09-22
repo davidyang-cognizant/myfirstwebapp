@@ -4,7 +4,14 @@
         <title>Login Page</title>
     </head>
     <body>
+
+    <nav class="navbar navbar-expand-md navbar-light bg-light mb-3 p-1">
+    	<a class="navbar-brand m-1" href="https://courses.in28minutes.com">in28minutes</a>
+    </nav>
+
     <div class="container">
+
+
         <h1>Welcome to login page</h1>
         <hr>
             <form method="post">
